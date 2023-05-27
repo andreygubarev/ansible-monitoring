@@ -1,9 +1,9 @@
-ANSIBLE_VERSION := 7.0.0
 ANSIBLE_VIRTUALENV ?= .venv
-ANSIBLE_PYTHON := $(ANSIBLE_VIRTUALENV)/bin/python3
+ANSIBLE_PYTHON := . $(ANSIBLE_VIRTUALENV)/bin/activate && python3
 ANSIBLE_PIP := $(ANSIBLE_PYTHON) -m pip
-ANSIBLE_LINT := $(ANSIBLE_VIRTUALENV)/bin/ansible-lint
-ANSIBLE_GALAXY := $(ANSIBLE_VIRTUALENV)/bin/ansible-galaxy
+ANSIBLE_LINT := . $(ANSIBLE_VIRTUALENV)/bin/activate && ansible-lint
+ANSIBLE_GALAXY := . $(ANSIBLE_VIRTUALENV)/bin/activate && ansible-galaxy
+ANSIBLE_MOLECULE := . $(ANSIBLE_VIRTUALENV)/bin/activate && molecule
 
 .PHONY: help
 help: ## Show this help
@@ -12,11 +12,7 @@ help: ## Show this help
 $(ANSIBLE_VIRTUALENV):
 	python3 -m venv $(ANSIBLE_VIRTUALENV)
 	$(ANSIBLE_PIP) install -U pip setuptools wheel
-	$(ANSIBLE_PIP) install \
-		'ansible>=$(ANSIBLE_VERSION)' \
-		'ansible-lint' \
-		'molecule>=5.0.0' \
-		'testinfra>=6.0.0'
+	$(ANSIBLE_PIP) install -U -r requirements.txt
 
 .PHONY: virtualenv
 virtualenv: $(ANSIBLE_VIRTUALENV) ## Create local environment
@@ -24,6 +20,10 @@ virtualenv: $(ANSIBLE_VIRTUALENV) ## Create local environment
 .PHONY: lint
 lint: virtualenv ## Lint Ansible code
 	@$(ANSIBLE_LINT) -v
+
+.PHONY: test
+test: virtualenv ## Test Ansible code
+	@$(ANSIBLE_MOLECULE) test
 
 .PHONY: clean
 clean: ## Remove temporary files
