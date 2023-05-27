@@ -1,8 +1,8 @@
 ---
 node_exporter_binary: '/usr/local/bin/node_exporter'
 
-node_exporter_download_version: 1.1.2
-node_exporter_download_checksum: 8c1f6a317457a658e0ae68ad710f6b4098db2cad10204649b51e3c043aa3e70d
+node_exporter_download_version: 1.5.0
+node_exporter_download_checksum: af999fd31ab54ed3a34b9f0b10c28e9acee9ef5ac5a5d5edfdde85437db7acbb
 node_exporter_download_url: >
   https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_download_version }}/node_exporter-{{ node_exporter_download_version }}.linux-amd64.tar.gz
 
