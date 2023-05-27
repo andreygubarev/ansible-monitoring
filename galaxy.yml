@@ -1,0 +1,26 @@
+namespace: andreygubarev
+name: monitoring
+version: 1.0.0
+
+readme: README.md
+
+authors:
+  - Andrey Gubarev <andrey@andreygubarev.com> (andreygubarev.com)
+
+description: Ansible collection for monitoring
+license_file: LICENSE
+
+tags: []
+
+dependencies: {}
+
+repository: https://github.com/andreygubarev/ansible-monitoring
+documentation: https://github.com/andreygubarev/ansible-monitoring
+homepage: https://github.com/andreygubarev/ansible-monitoring
+issues: https://github.com/andreygubarev/ansible-monitoring/issues
+
+build_ignore:
+  - Makefile
+  - .venv
+  - .git
+  - .gitignore
