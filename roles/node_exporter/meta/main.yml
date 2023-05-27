@@ -7,11 +7,10 @@ galaxy_info:
 
   min_ansible_version: '7.0.0'
 
-  platforms: []
-  # platforms:
-  # - name: Ubuntu
-  #   versions:
-  #   - focal
+  platforms:
+  - name: Ubuntu
+    versions:
+    - focal
 
   galaxy_tags: []
 

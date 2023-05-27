@@ -1,1 +1,48 @@
 ---
+- name: Download archive
+  ansible.builtin.get_url:
+    url: "{{ node_exporter_download_url }}"
+    dest: "/tmp/node_exporter-{{ node_exporter_download_version }}.linux-amd64.tar.gz"
+    checksum: "sha256:{{ node_exporter_download_checksum }}"
+    mode: '0644'
+  register: node_exporter_download
+  until: node_exporter_download is succeeded
+  retries: 5
+  delay: 2
+  check_mode: false
+
+- name: Unpack archive
+  ansible.builtin.unarchive:
+    src: "/tmp/node_exporter-{{ node_exporter_download_version }}.linux-amd64.tar.gz"
+    dest: "/tmp"
+    creates: "/tmp/node_exporter-{{ node_exporter_download_version }}.linux-amd64/node_exporter"
+    remote_src: true
+  check_mode: false
+
+- name: Put binaries
+  ansible.builtin.copy:
+    src: "/tmp/node_exporter-{{ node_exporter_download_version }}.linux-amd64/node_exporter"
+    dest: "{{ node_exporter_binary }}"
+    mode: '0755'
+    owner: root
+    group: root
+    remote_src: true
+  notify:
+    - Restart node_exporter
+
+- name: Create systemd service unit
+  ansible.builtin.template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart node_exporter
+
+- name: Ensure service is started and enabled
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: "{{ node_exporter_service_name }}"
+    state: "{{ node_exporter_service_state }}"
+    enabled: "{{ node_exporter_service_enabled }}"

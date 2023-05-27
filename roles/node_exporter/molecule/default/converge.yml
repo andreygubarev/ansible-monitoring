@@ -1,6 +1,7 @@
 ---
 - name: Converge
   hosts: all
+  become: true
   tasks:
     - name: "Include node_exporter"
       ansible.builtin.include_role:
