@@ -10,7 +10,9 @@ authors:
 description: Ansible collection for monitoring
 license_file: LICENSE
 
-tags: []
+tags:
+  - infrastructure
+  - monitoring
 
 dependencies: {}
 
