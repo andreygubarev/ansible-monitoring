@@ -1,8 +1,8 @@
 ANSIBLE_VIRTUALENV ?= .venv
-ANSIBLE_PYTHON := $(ANSIBLE_VIRTUALENV)/bin/python3
+ANSIBLE_PYTHON := . $(ANSIBLE_VIRTUALENV)/bin/activate && python3
 ANSIBLE_PIP := $(ANSIBLE_PYTHON) -m pip
-ANSIBLE_LINT := $(ANSIBLE_VIRTUALENV)/bin/ansible-lint
-ANSIBLE_GALAXY := $(ANSIBLE_VIRTUALENV)/bin/ansible-galaxy
+ANSIBLE_LINT := . $(ANSIBLE_VIRTUALENV)/bin/activate && ansible-lint
+ANSIBLE_GALAXY := . $(ANSIBLE_VIRTUALENV)/bin/activate && ansible-galaxy
 
 .PHONY: help
 help: ## Show this help
@@ -15,6 +15,10 @@ $(ANSIBLE_VIRTUALENV):
 
 .PHONY: virtualenv
 virtualenv: $(ANSIBLE_VIRTUALENV) ## Create local environment
+
+.PHONY: lint
+lint: virtualenv ## Lint Ansible code
+	@$(ANSIBLE_LINT) -v
 
 .PHONY: build
 build: virtualenv ## Build collection archive
