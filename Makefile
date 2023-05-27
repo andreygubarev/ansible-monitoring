@@ -1,4 +1,3 @@
-ANSIBLE_VERSION := 7.0.0
 ANSIBLE_VIRTUALENV ?= .venv
 ANSIBLE_PYTHON := $(ANSIBLE_VIRTUALENV)/bin/python3
 ANSIBLE_PIP := $(ANSIBLE_PYTHON) -m pip
@@ -12,9 +11,7 @@ help: ## Show this help
 $(ANSIBLE_VIRTUALENV):
 	python3 -m venv $(ANSIBLE_VIRTUALENV)
 	$(ANSIBLE_PIP) install -U pip setuptools wheel
-	$(ANSIBLE_PIP) install \
-		'ansible-lint' \
-		'ansible>=$(ANSIBLE_VERSION)'
+	$(ANSIBLE_PIP) install -U -r requirements.txt
 
 .PHONY: virtualenv
 virtualenv: $(ANSIBLE_VIRTUALENV) ## Create local environment
