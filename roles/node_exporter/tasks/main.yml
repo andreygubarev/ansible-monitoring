@@ -1,9 +1,24 @@
 ---
+- name: Set architecture (amd64)
+  ansible.builtin.set_fact:
+    node_exporter_arch: "amd64"
+  when: ansible_facts.architecture == "x86_64"
+
+- name: Set architecture (arm64)
+  ansible.builtin.set_fact:
+    node_exporter_arch: "arm64"
+  when:
+    - ( ansible_facts.architecture is search("arm") and
+        ansible_facts.userspace_bits == "64" ) or
+      ansible_facts.architecture is search("aarch64")
+
 - name: Download archive
   ansible.builtin.get_url:
-    url: "{{ node_exporter_download_url }}"
-    dest: "/tmp/node_exporter-{{ node_exporter_download_version }}.linux-amd64.tar.gz"
-    checksum: "sha256:{{ node_exporter_download_checksum }}"
+    url: >-
+      https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-{{ node_exporter_arch }}.tar.gz
+    dest: "/tmp/node_exporter-{{ node_exporter_version }}.linux-{{ node_exporter_arch }}.tar.gz"
+    checksum: >-
+      sha256:https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/sha256sums.txt
     mode: '0644'
   register: node_exporter_download
   until: node_exporter_download is succeeded
@@ -13,15 +28,15 @@
 
 - name: Unpack archive
   ansible.builtin.unarchive:
-    src: "/tmp/node_exporter-{{ node_exporter_download_version }}.linux-amd64.tar.gz"
+    src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-{{ node_exporter_arch }}.tar.gz"
     dest: "/tmp"
-    creates: "/tmp/node_exporter-{{ node_exporter_download_version }}.linux-amd64/node_exporter"
+    creates: "/tmp/node_exporter-{{ node_exporter_version }}.linux-{{ node_exporter_arch }}/node_exporter"
     remote_src: true
   check_mode: false
 
 - name: Put binaries
   ansible.builtin.copy:
-    src: "/tmp/node_exporter-{{ node_exporter_download_version }}.linux-amd64/node_exporter"
+    src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-{{ node_exporter_arch }}/node_exporter"
     dest: "{{ node_exporter_binary }}"
     mode: '0755'
     owner: root
@@ -37,12 +52,13 @@
     owner: root
     group: root
     mode: '0644'
+  register: node_exporter_service
   notify:
     - Restart node_exporter
 
 - name: Ensure service is started and enabled
   ansible.builtin.systemd:
-    daemon_reload: true
+    daemon_reload: "{{ node_exporter_service.changed }}"
     name: "{{ node_exporter_service_name }}"
     state: "{{ node_exporter_service_state }}"
     enabled: "{{ node_exporter_service_enabled }}"
