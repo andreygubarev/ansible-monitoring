@@ -10,8 +10,8 @@ help: ## Show this help
 
 $(ANSIBLE_VIRTUALENV):
 	python3 -m venv $(ANSIBLE_VIRTUALENV)
-	$(ANSIBLE_PIP) install -U pip setuptools wheel
-	$(ANSIBLE_PIP) install -U -r requirements.txt
+	$(ANSIBLE_PIP) install 'setuptools>=45.0.0' wheel
+	$(ANSIBLE_PIP) install -r requirements.txt
 
 .PHONY: virtualenv
 virtualenv: $(ANSIBLE_VIRTUALENV) ## Create local environment
@@ -25,9 +25,9 @@ build: virtualenv ## Build collection archive
 	$(ANSIBLE_LINT)
 	$(ANSIBLE_GALAXY) collection build --force
 
-.PHONY: release
-release: build ## Release collection
-	open https://galaxy.ansible.com/my-content/namespaces
+.PHONY: publish
+publish: clean build ## Publish collection
+	$(ANSIBLE_GALAXY) collection publish *.tar.gz --api-key $(GALAXY_API_KEY)
 
 .PHONY: clean
 clean: ## Remove temporary files

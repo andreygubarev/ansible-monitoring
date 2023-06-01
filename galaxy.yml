@@ -1,5 +1,5 @@
 namespace: andreygubarev
-name: monitoring
+name: prometheus
 version: 1.0.1
 
 readme: README.md
@@ -7,7 +7,7 @@ readme: README.md
 authors:
   - Andrey Gubarev <andrey@andreygubarev.com> (andreygubarev.com)
 
-description: Ansible collection for monitoring
+description: Ansible collection for prometheus
 license_file: LICENSE
 
 tags:
@@ -16,10 +16,10 @@ tags:
 
 dependencies: {}
 
-repository: https://github.com/andreygubarev/ansible-monitoring
-documentation: https://github.com/andreygubarev/ansible-monitoring
-homepage: https://github.com/andreygubarev/ansible-monitoring
-issues: https://github.com/andreygubarev/ansible-monitoring/issues
+repository: https://github.com/andreygubarev/ansible-prometheus
+documentation: https://github.com/andreygubarev/ansible-prometheus
+homepage: https://github.com/andreygubarev/ansible-prometheus
+issues: https://github.com/andreygubarev/ansible-prometheus/issues
 
 build_ignore:
   - Makefile
