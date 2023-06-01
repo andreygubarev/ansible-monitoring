@@ -37,12 +37,13 @@
     owner: root
     group: root
     mode: '0644'
+  register: node_exporter_service
   notify:
     - Restart node_exporter
 
 - name: Ensure service is started and enabled
   ansible.builtin.systemd:
-    daemon_reload: true
+    daemon_reload: "{{ node_exporter_service.changed }}"
     name: "{{ node_exporter_service_name }}"
     state: "{{ node_exporter_service_state }}"
     enabled: "{{ node_exporter_service_enabled }}"
